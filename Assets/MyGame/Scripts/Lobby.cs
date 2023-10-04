@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using PlayFab;
+using PlayFab.ClientModels;
 
 public class Lobby : MonoBehaviour {
 
@@ -24,7 +24,30 @@ public class Lobby : MonoBehaviour {
 
         playerName = "Player" + Random.Range(1000, 10000);
         playerInputField.text = playerName;
-	}
+        GetPlayFabUsername();
+    }
+
+    private void GetPlayFabUsername()
+    {
+        var request = new GetPlayerProfileRequest
+        {
+            PlayFabId = PlayerData.PlayFabId
+        };
+
+        PlayFabClientAPI.GetPlayerProfile(request, OnGetPlayerProfileSuccess, OnGetPlayerProfileFailure);
+    }
+
+    private void OnGetPlayerProfileSuccess(GetPlayerProfileResult result)
+    {
+        string playFabUsername = result.PlayerProfile.DisplayName;
+        Debug.Log("PlayFab Username: " + playFabUsername);
+        playerInputField.text = playFabUsername;
+    }
+
+    private void OnGetPlayerProfileFailure(PlayFabError error)
+    {
+        Debug.LogError("Failed to get PlayFab profile: " + error.ErrorMessage);
+    }
 
     public void PanelLobbyActive()
     {
