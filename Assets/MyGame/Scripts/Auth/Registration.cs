@@ -1,5 +1,6 @@
 using PlayFab;
 using PlayFab.ClientModels;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using static System.Net.Mime.MediaTypeNames;
@@ -11,14 +12,27 @@ public class Registration : MonoBehaviour
     [SerializeField] private InputField _userPasswordField;
     [field: SerializeField] public Button RegistrationButton { get; private set; }
     [SerializeField] private UnityEngine.UI.Text _errorMessageText;
+    [SerializeField] private Button _alreadyRegButton;
+    [SerializeField] private Canvas _signInCanvas;
+    [SerializeField] private Canvas _regCanvas;
 
     private void Awake()
     {
         RegistrationButton.onClick.AddListener(OnRegisterButtonClick);
+        _alreadyRegButton.onClick.AddListener(OnAlreadyRegButtonClick);
     }
 
-    private void OnRegisterButtonClick() =>
+    private void OnAlreadyRegButtonClick()
+    {
+        _regCanvas.gameObject.SetActive(false);
+        _signInCanvas.gameObject.SetActive(true);
+    }
+
+    private void OnRegisterButtonClick()
+    {
+        Debug.Log("Button click");
         PlayFabClientAPI.RegisterPlayFabUser(PlayFabRequest(), Success, Error);
+    }
 
     private RegisterPlayFabUserRequest PlayFabRequest()
     {
@@ -35,6 +49,7 @@ public class Registration : MonoBehaviour
     private void Success(RegisterPlayFabUserResult result)
     {
         Debug.Log("Register PlayFab Success");
+        OnAlreadyRegButtonClick();
     }
 
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ExitGames.Client.Photon;
@@ -16,17 +17,28 @@ public class AuthorizationLogPass : MonoBehaviourPunCallbacks
     [SerializeField] private InputField _userNameField;
     [SerializeField] private InputField _userPasswordField;
     [SerializeField] private Button _registrationButton;
+    [SerializeField] private Button _backButton;
     [SerializeField] private Text _errorText;
-    [SerializeField] private SceneAsset _scene;
+    //[SerializeField] private SceneAsset _scene;
+    [SerializeField] private Canvas _signInCanvas;
+    [SerializeField] private Canvas _regCanvas;
 
-    private string _userName = "test";
-    private string _userPassword = "12345678";
+
+    private string _userName;
+    private string _userPassword;
 
     private void Awake()
     {
         _userNameField.onValueChanged.AddListener(SetUserName);
         _userPasswordField.onValueChanged.AddListener(SetUserPassword);
         _registrationButton.onClick.AddListener(Submit);
+        _backButton.onClick.AddListener(OnBackButtonClick);
+    }
+
+    private void OnBackButtonClick()
+    {
+        _regCanvas.gameObject.SetActive(true);
+        _signInCanvas.gameObject.SetActive(false);
     }
 
     private void SetUserName(string value)
